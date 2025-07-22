@@ -632,9 +632,6 @@ app.patch('/users/:id', async (req, res) => {
     
 
 
-
-// productss
-
 // Create product
 app.post('/products', async (req, res) => {
   try {
@@ -712,12 +709,21 @@ app.post('/products', async (req, res) => {
       ];
     }
 
-    // Add date filtering
-    if (startDate || endDate) {
-      query.date = {};
-      if (startDate) query.date.$gte = new Date(startDate);
-      if (endDate) query.date.$lte = new Date(endDate);
-    }
+// Update the /products endpoint date filtering logic
+if (startDate) {
+  // Convert to Date object and set to start of day
+  const start = new Date(startDate);
+  start.setUTCHours(0, 0, 0, 0);
+  
+  // Set end of the same day for exact date matching
+  const end = new Date(start);
+  end.setUTCDate(end.getUTCDate() + 1);
+  
+  query.date = { 
+    $gte: start,
+    $lt: end
+  };
+}
 
     const skip = (page - 1) * limit;
     
