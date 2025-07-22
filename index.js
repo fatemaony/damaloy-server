@@ -1694,7 +1694,7 @@ app.delete('/user/reviews/:id', async (req, res) => {
       res.status(404).json({ message: 'Not found' });
     });
 
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } catch (error) {
     console.error('Server startup error:', error);
