@@ -90,7 +90,7 @@ async function run() {
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Payment Intent Creation
-app.post('/create-payment-intent', async (req, res) => {
+app.post('/api/create-payment-intent', async (req, res) => {
   const { amount } = req.body;
   
   try {
@@ -317,7 +317,7 @@ app.patch('/api/orders/:id', async (req, res) => {
 });
 
 // Payment Recording with Order Update - Fixed to handle frontend data properly
-app.post('/payments', async (req, res) => {
+app.post('/api/payments', async (req, res) => {
   try {
     const { 
       orderId, 
@@ -386,7 +386,7 @@ app.post('/payments', async (req, res) => {
 });
 
 // Get Payment History - Fixed query compatibility
-app.get('/payments', async (req, res) => {
+app.get('/api/payments', async (req, res) => {
   try {
     const userEmail = req.query.email;
     
@@ -414,7 +414,7 @@ app.get('/payments', async (req, res) => {
 });
 
 // Add route to get order confirmation details for frontend
-app.get('/user/orders/confirmation/:orderId', async (req, res) => {
+app.get('/api/user/orders/confirmation/:orderId', async (req, res) => {
   try {
     const { orderId } = req.params;
     
@@ -442,7 +442,7 @@ app.get('/user/orders/confirmation/:orderId', async (req, res) => {
 });
 
 
-        app.post('/users', async (req, res) => {
+        app.post('/api/users', async (req, res) => {
         const { email, displayName, photoURL } = req.body;
   
         const userExists = await usersCollection.findOne({ email });
@@ -464,7 +464,7 @@ app.get('/user/orders/confirmation/:orderId', async (req, res) => {
         });
 
   
- app.get('/users', async (req, res) => {
+ app.get('/api/users', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
@@ -500,7 +500,7 @@ app.get('/user/orders/confirmation/:orderId', async (req, res) => {
 });
 
 // PATCH: Update user role (only allow user->vendor changes)
-app.patch('/users/:id', async (req, res) => {
+app.patch('/api/users/:id', async (req, res) => {
     try {
         const userId = req.params.id;
         const { role } = req.body;
@@ -551,7 +551,7 @@ app.patch('/users/:id', async (req, res) => {
     }
 });
          // GET: Get user role by email
-        app.get('/users/:email/role', async (req, res) => {
+        app.get('/api/users/:email/role', async (req, res) => {
             try {
                 const email = req.params.email;
 
@@ -578,7 +578,7 @@ app.patch('/users/:id', async (req, res) => {
 
         // vendor data 
 
-        app.post('/vendor', async (req, res) => {
+        app.post('/api/vendor', async (req, res) => {
         try {
         const vendor = req.body;
         const result = await vendorCollection.insertOne(vendor);
@@ -599,7 +599,7 @@ app.patch('/users/:id', async (req, res) => {
       })
          
 
-      app.get('/vendor', async (req, res) => {
+      app.get('/api/vendor', async (req, res) => {
     try {
         const vendors = await vendorCollection.find().toArray();
         res.send(vendors);
@@ -609,7 +609,7 @@ app.patch('/users/:id', async (req, res) => {
     }
 });
 
-     app.get('/vendor/:email', async (req, res) => {
+     app.get('/api/vendor/:email', async (req, res) => {
     try {
         const email = req.params.email;
         
@@ -633,7 +633,7 @@ app.patch('/users/:id', async (req, res) => {
 
 
 // Create product
-app.post('/products', async (req, res) => {
+app.post('/api/products', async (req, res) => {
   try {
     const productData = req.body;
     const requiredFields = ['itemName', 'marketName', 'price', 'date'];
@@ -691,7 +691,7 @@ app.post('/products', async (req, res) => {
 });
 
 // Update the existing /products endpoint
-  app.get('/products', async (req, res) => {
+  app.get('/api/products', async (req, res) => {
   try {
     const { status, search, page = 1, limit = 100, sortBy, startDate, endDate } = req.query;
     const query = {};
@@ -775,7 +775,7 @@ if (startDate) {
 });
 
 
-app.get('/products/:id', async (req, res) => {
+app.get('/api/products/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     
@@ -812,7 +812,7 @@ app.get('/products/:id', async (req, res) => {
 
 
 // Update the PATCH /products/:id endpoint
-app.patch('/products/:id', async (req, res) => {
+app.patch('/api/products/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     const updateData = req.body;
@@ -893,7 +893,7 @@ app.patch('/products/:id', async (req, res) => {
   }
 });
 // Delete product (FIXED missing forward slash)
-app.delete('/products/:id', async (req, res) => {
+app.delete('/api/products/:id', async (req, res) => {
   try {
     const productId = req.params.id;
     
@@ -930,7 +930,7 @@ app.delete('/products/:id', async (req, res) => {
 
 
 // Add this new endpoint
-app.get('/products/:id/price-history', async (req, res) => {
+app.get('/api/products/:id/price-history', async (req, res) => {
   try {
     const productId = req.params.id;
     
@@ -976,7 +976,7 @@ app.get('/products/:id/price-history', async (req, res) => {
 
 
 // Advertisement Endpoints
-app.post('/ads', async (req, res) => {
+app.post('/api/ads', async (req, res) => {
   try {
     const advertisement = {
       ...req.body,
@@ -997,7 +997,7 @@ app.post('/ads', async (req, res) => {
   }
 });
 
-app.get('/ads', async (req, res) => {
+app.get('/api/ads', async (req, res) => {
   try {
     const { status, search, page = 1, limit = 10 } = req.query;
     const query = {};
@@ -1041,7 +1041,7 @@ app.get('/ads', async (req, res) => {
   }
 });
 
-app.get('/ads/:id', async (req, res) => {
+app.get('/api/ads/:id', async (req, res) => {
   try {
     const adId = req.params.id;
     
@@ -1076,7 +1076,7 @@ app.get('/ads/:id', async (req, res) => {
   }
 });
 
-app.patch('/ads/:id', async (req, res) => {
+app.patch('/api/ads/:id', async (req, res) => {
   try {
     const adId = req.params.id;
     const updateData = req.body;
@@ -1130,7 +1130,7 @@ app.patch('/ads/:id', async (req, res) => {
   }
 });
 
-app.delete('/ads/:id', async (req, res) => {
+app.delete('/api/ads/:id', async (req, res) => {
   try {
     const adId = req.params.id;
     
@@ -1174,7 +1174,7 @@ app.delete('/ads/:id', async (req, res) => {
 
 // Add to watchlist
 // Add to watchlist
-app.post('/user/watchlist', async (req, res) => {
+app.post('/api/user/watchlist', async (req, res) => {
     try {
         const { email, productId } = req.body;
         
@@ -1217,7 +1217,7 @@ app.post('/user/watchlist', async (req, res) => {
 });
 
 // Get user's watchlist
-app.get('/user/watchlist', async (req, res) => {
+app.get('/api/user/watchlist', async (req, res) => {
     try {
         const { email } = req.query;
         
@@ -1269,7 +1269,7 @@ app.get('/user/watchlist', async (req, res) => {
 });
 
 // Remove from watchlist
-app.delete('/user/watchlist/:productId', async (req, res) => {
+app.delete('/api/user/watchlist/:productId', async (req, res) => {
     try {
         const { email } = req.body;
         const { productId } = req.params;
@@ -1304,7 +1304,7 @@ app.delete('/user/watchlist/:productId', async (req, res) => {
 });
 
 // Check if product is in watchlist (optional utility endpoint)
-app.get('/user/watchlist/check/:productId', async (req, res) => {
+app.get('/api/user/watchlist/check/:productId', async (req, res) => {
     try {
         const { email } = req.query;
         const { productId } = req.params;
@@ -1333,7 +1333,7 @@ app.get('/user/watchlist/check/:productId', async (req, res) => {
 });
 
 // Get watchlist count for user (optional utility endpoint)
-app.get('/user/watchlist/count', async (req, res) => {
+app.get('/api/user/watchlist/count', async (req, res) => {
     try {
         const { email } = req.query;
         
@@ -1351,7 +1351,7 @@ app.get('/user/watchlist/count', async (req, res) => {
 
 
 // Add to cart
-app.post('/user/cart', async (req, res) => {
+app.post('/api/user/cart', async (req, res) => {
   try {
     console.log('Received body:', req.body); // Debug log
     
@@ -1416,7 +1416,7 @@ app.post('/user/cart', async (req, res) => {
 
 
 // Get user's cart
-app.get('/user/cart', async (req, res) => {
+app.get('/api/user/cart', async (req, res) => {
   try {
     const { email } = req.query;
     
@@ -1446,7 +1446,7 @@ app.get('/user/cart', async (req, res) => {
 });
 
 // Update cart item quantity
-app.patch('/user/cart/:productId', async (req, res) => {
+app.patch('/api/user/cart/:productId', async (req, res) => {
   try {
     const { email, quantity } = req.body;
     const { productId } = req.params;
@@ -1495,7 +1495,7 @@ app.patch('/user/cart/:productId', async (req, res) => {
 });
 
 // Remove from cart
-app.delete('/user/cart/:productId', async (req, res) => {
+app.delete('/api/user/cart/:productId', async (req, res) => {
   try {
     const { email } = req.body;
     const { productId } = req.params;
@@ -1535,7 +1535,7 @@ app.delete('/user/cart/:productId', async (req, res) => {
 
 
 // Clear user's cart endpoint
-app.delete('/user/cart/clear', async (req, res) => {
+app.delete('/api/user/cart/clear', async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
@@ -1576,7 +1576,7 @@ app.delete('/user/cart/clear', async (req, res) => {
 
 
 // Review Endpoints
-app.post('/reviews/:productId', async (req, res) => {
+app.post('/api/reviews/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
     const { rating, comment, priceAssessment, user } = req.body;
@@ -1615,7 +1615,7 @@ app.post('/reviews/:productId', async (req, res) => {
 });
 
 // Get reviews for a specific product
-app.get('/reviews/:productId', async (req, res) => {
+app.get('/api/reviews/:productId', async (req, res) => {
   try {
     const { productId } = req.params;
     
@@ -1631,7 +1631,7 @@ app.get('/reviews/:productId', async (req, res) => {
 });
 
 // Update a user's review
-app.put('/user/reviews/:id', async (req, res) => {
+app.put('/api/user/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const { rating, comment, priceAssessment, productId } = req.body;
@@ -1667,7 +1667,7 @@ app.put('/user/reviews/:id', async (req, res) => {
 });
 
 // Delete a user's review
-app.delete('/user/reviews/:id', async (req, res) => {
+app.delete('/api/user/reviews/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
